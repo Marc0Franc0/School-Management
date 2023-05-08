@@ -25,11 +25,11 @@ public class Subject {
     String name;
     String description;
 
-    //Set students
+    //Sets the students of the subject
     @ManyToMany(mappedBy = "subjects")
     private Set<Student> students = new HashSet<>();
 
-    //Set notes
+    //sets student grades
     @OneToMany(mappedBy = "course")
     Set<Note> notes;
 }

@@ -31,7 +31,8 @@ public class Student {
     String email;
     String cell_phone;
     
-    //Set subjects
+    //Sets students of subjects
+    //many-to-many relationship with two columns -> "student_id" and "subject_id"
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
         name = "students_subjects", 
@@ -40,7 +41,7 @@ public class Student {
     )
     Set<Subject> subjects = new HashSet<>();
 
-    //Set notes 
+    //Sets student notes
     @OneToMany(mappedBy = "student")
     Set<Note> notes;
 }

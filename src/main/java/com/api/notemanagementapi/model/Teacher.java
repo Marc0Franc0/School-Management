@@ -29,7 +29,7 @@ public class Teacher {
     String email;
     String cell_phone;
     
-    //Set subjects
+    //Set the teacher's subjects
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Subject> subjects = new HashSet<>();
 }

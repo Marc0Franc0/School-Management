@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor 
 @Entity
 @Table(name = "notes")
+//Representa las notas de los estudiantes por cada materia
 public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
