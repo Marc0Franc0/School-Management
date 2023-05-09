@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  app:
+    container_name: app-container
+    build: .
+    ports:
+      - "9090:8080"
+    restart: always
+    environment:
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/note_management
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+     # DATA_USER_ADMIN: marco
+      #DATA_PASSWORD_ADMIN : 1234
+    networks:
+      - app-db
+  db:
+    container_name: db-container
+    image: mysql:8.0.26
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: note_management
+    ports:
+      - "3306:3306"
+    networks:
+      - app-db
+networks:
+ app-db:
