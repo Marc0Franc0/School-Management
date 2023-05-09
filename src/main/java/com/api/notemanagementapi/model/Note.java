@@ -9,12 +9,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor 
-@Entity
+@AllArgsConstructor
+@Entity 
 @Table(name = "notes")
 //Representa las notas de los estudiantes por cada materia
 public class Note {

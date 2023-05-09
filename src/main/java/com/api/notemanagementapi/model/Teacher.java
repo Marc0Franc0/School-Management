@@ -17,13 +17,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor 
-@Entity
+@AllArgsConstructor
+@Entity 
 @Table(name = "teachers")
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Long id;
     String name;
     String lastName;
     String email;

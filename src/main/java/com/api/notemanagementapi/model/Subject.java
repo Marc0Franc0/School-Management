@@ -11,17 +11,19 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Builder
-@Entity
 @NoArgsConstructor
-@AllArgsConstructor 
+@AllArgsConstructor
+@Entity 
 @Table(name = "subjects")
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Long id;
     String name;
     String description;
 
@@ -30,6 +32,6 @@ public class Subject {
     private Set<Student> students = new HashSet<>();
 
     //sets student grades
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "subject")
     Set<Note> notes;
 }
