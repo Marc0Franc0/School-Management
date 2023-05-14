@@ -31,12 +31,21 @@ public class StudentServiceImpl implements StudentService {
         .email(student.getEmail())
         .build());
     }
-
-    //pendiente
+    
     @Override
-    public Student updateStudentById(Long id, Student student) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateStudent'");
+    public Optional<Object> updateStudentById(Long id, Student student) {
+        return studentRepository.findById(id)
+        .map(stu -> {
+        stu  =  Student
+          .builder()
+          .id(id)
+          .name(student.getName())
+          .lastName(student.getLastName())
+          .email(student.getEmail())
+          .cell_phone(student.getCell_phone())
+          .build();
+          return studentRepository.save(stu);
+        });
     }
 
     @Override

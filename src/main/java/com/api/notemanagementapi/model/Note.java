@@ -1,5 +1,7 @@
 package com.api.notemanagementapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,10 +28,12 @@ public class Note {
 
     float note;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "student_id")
     Student student;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "subject_id")
     Subject subject;

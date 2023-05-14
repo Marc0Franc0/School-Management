@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,60 +16,65 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.api.notemanagementapi.model.Student;
 import com.api.notemanagementapi.service.StudentService;
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/students")
 public class StudentController {
 
    @Autowired
    StudentService studentService;
 
-   @GetMapping("/students")
+   @GetMapping("/")
    public ResponseEntity<List<Student>> getAll() {
       return ResponseEntity.status(HttpStatus.OK).body(studentService.getAll());
    }
 
-   @GetMapping("/student/{id}")
-   public void getStudent(@PathVariable Long id) {
+   @GetMapping("/{id}")
+   public ResponseEntity<Student> getStudent(@PathVariable Long id) {
       Optional<Student> student = studentService.getStudentById(id);
-        student
-       .stream()
-       .findFirst()
-       .ifPresentOrElse(s-> {ResponseEntity.status(HttpStatus.OK).body(s);},
-       ()-> ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found"));
+      return ResponseEntity.status(HttpStatus.OK).body(student.get());
 
-     
    }
 
-   @PostMapping("/students")
-   public ResponseEntity<String> createStudent(@RequestBody Student student) {
-      Student studentCreated = studentService.createStudent(student);
-      if (studentCreated != null) {
-         return ResponseEntity.status(HttpStatus.OK).body("Student created");
+   @PostMapping("/")
+   public ResponseEntity<String> createStudent(@Valid @RequestBody Student student, BindingResult bindingResult) {
+      if (bindingResult.hasErrors()) {
+         return ResponseEntity
+               .status(HttpStatus.BAD_REQUEST)
+               .body(bindingResult.getFieldError().getDefaultMessage());
       } else {
-         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Student not created");
+         studentService.createStudent(student);
+         return ResponseEntity
+               .status(HttpStatus.OK)
+               .body("Student created");
       }
 
    }
 
-   @PutMapping("/student/{id}")
+   @PutMapping("/{id}")
    public ResponseEntity<String> updateStudent(@PathVariable Long id, @RequestBody Student student) {
-      Student studentModified = studentService.updateStudentById(id, student);
-      if (studentModified != null) {
+
+      if (studentService.getStudentById(id).isPresent()) {
+
+         studentService.updateStudentById(id, student);
+
          return ResponseEntity.status(HttpStatus.OK).body("Student modified");
       } else {
-         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Student not found");
+         return ResponseEntity.status(HttpStatus.OK).body("Student not found");
       }
 
    }
 
-   @DeleteMapping("/student/{id}")
-   public void removeStudentById(@PathVariable Long id) {
-      Optional<Student> student = studentService.removeStudentById(id);
-      student
-      .stream()
-      .findFirst()
-      .ifPresentOrElse(s->ResponseEntity.status(HttpStatus.OK).body("Student deleted"), 
-       ()-> ResponseEntity.status(HttpStatus.NO_CONTENT).body("Student not found"));
+   @DeleteMapping("/{id}")
+   public ResponseEntity<String> removeStudentById(@PathVariable Long id) {
+
+      if (studentService.getStudentById(id).isPresent()) {
+         studentService.removeStudentById(id);
+         return ResponseEntity.status(HttpStatus.OK).body("Student deleted");
+      } else {
+         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student not found");
+      }
+
    }
 }

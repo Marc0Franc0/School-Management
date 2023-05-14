@@ -10,6 +10,6 @@ public interface StudentService {
     public List<Student> getAll();
     public Optional<Student> getStudentById(Long id);
     public Student createStudent(Student student);
-    public Student updateStudentById(Long id, Student student);
+    public Optional<Object> updateStudentById(Long id, Student student);
     public Optional<Student> removeStudentById (Long id);
 }
