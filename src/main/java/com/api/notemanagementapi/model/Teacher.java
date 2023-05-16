@@ -1,14 +1,17 @@
 package com.api.notemanagementapi.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,13 +26,19 @@ import lombok.NoArgsConstructor;
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String name;
-    String lastName;
-    String email;
-    String cell_phone;
+    private Long id;
+    
+    @NotEmpty(message = "Name may not be empty")
+    @NotNull (message = "Name may not be null")
+    private String name;
+
+    private String lastName;
+
+    private String email;
+    
+    private String cell_phone;
     
     //Set the teacher's subjects
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Subject> subjects = new HashSet<>();
+    @OneToMany(fetch = FetchType.EAGER,mappedBy =  "teacher", cascade = CascadeType.ALL)
+    private List<Subject> subjects = new ArrayList<>(); 
 }
