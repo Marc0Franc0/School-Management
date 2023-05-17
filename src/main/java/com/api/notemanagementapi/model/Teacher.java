@@ -3,6 +3,7 @@ package com.api.notemanagementapi.model;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -28,12 +29,12 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotEmpty(message = "Name may not be empty")
-    @NotNull (message = "Name may not be null")
+    @Column(unique = true)
     private String name;
 
     private String lastName;
-
+    
+    @Column(unique = true)
     private String email;
     
     private String cell_phone;

@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -30,10 +31,12 @@ public class Student {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
+  @Column(unique = true)
   private String name;
 
   private String lastName;
 
+  @Column(unique = true)
   private String email;
 
   private String cell_phone;
