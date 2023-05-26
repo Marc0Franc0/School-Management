@@ -58,9 +58,12 @@ public class SecurityConfig {
                 .sessionManagement()// Permite la gestión de sesiones
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeHttpRequests()// Toda petición http debe ser autorizada
-                .anyRequest().permitAll()
-                .and()
+                .authorizeHttpRequests(
+                x->{
+                     x.requestMatchers("/api/auth/**").permitAll();
+                     x.anyRequest().authenticated();
+                    }
+                )// Toda petición http debe ser autorizada
                 .httpBasic();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
