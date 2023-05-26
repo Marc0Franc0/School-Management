@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.api.notemanagementapi.dto.NoteDto;
 import com.api.notemanagementapi.model.Note;
-import com.api.notemanagementapi.model.NoteRequest;
 import com.api.notemanagementapi.service.NoteService;
 import jakarta.validation.Valid;
 
@@ -39,7 +40,7 @@ public class NoteController {
    }
 
    @PostMapping("/")
-   public ResponseEntity<String> createStudent(@Valid @RequestBody NoteRequest note,
+   public ResponseEntity<String> createStudent(@Valid @RequestBody NoteDto note,
          BindingResult bindingResult) {
       if (bindingResult.hasErrors()) {
          return ResponseEntity
@@ -55,7 +56,7 @@ public class NoteController {
    }
 
    @PutMapping("/{id}")
-   public ResponseEntity<String> updateStudent(@PathVariable Long id, @RequestBody NoteRequest note) {
+   public ResponseEntity<String> updateStudent(@PathVariable Long id, @RequestBody NoteDto note) {
 
       if (noteService.getNoteById(id).isPresent()) {
 

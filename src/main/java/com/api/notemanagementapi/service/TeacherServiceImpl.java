@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.api.notemanagementapi.dto.TeacherDto;
 import com.api.notemanagementapi.model.Teacher;
-import com.api.notemanagementapi.model.TeacherRequest;
 import com.api.notemanagementapi.repository.TeacherRepository;
 
 @Service
@@ -24,7 +25,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Teacher createTeacher(TeacherRequest teacher) {
+    public Teacher createTeacher(TeacherDto teacher) {
         // TODO Auto-generated method stub
         return teacherRepository.save(Teacher
                 .builder()
@@ -36,7 +37,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Optional<Object> updateTeacherById(Long id, TeacherRequest teacher) {
+    public Optional<Object> updateTeacherById(Long id, TeacherDto teacher) {
         // TODO Auto-generated method stub
         return teacherRepository.findById(id)
                 .map(tch -> {

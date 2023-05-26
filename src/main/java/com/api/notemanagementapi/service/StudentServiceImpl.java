@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.api.notemanagementapi.dto.StudentDto;
 import com.api.notemanagementapi.model.Student;
-import com.api.notemanagementapi.model.StudentRequest;
 import com.api.notemanagementapi.repository.StudentRepository;
 import com.api.notemanagementapi.repository.SubjectRepository;
 
@@ -27,7 +28,7 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findById(id);
     }
     @Override
-    public Student createStudent(StudentRequest student) {
+    public Student createStudent(StudentDto student) {
         return studentRepository.save( Student
         .builder()
         .name(student.getName())
@@ -39,7 +40,7 @@ public class StudentServiceImpl implements StudentService {
     }
     
     @Override
-    public Optional<Object> updateStudentById(Long id, StudentRequest student) {
+    public Optional<Object> updateStudentById(Long id, StudentDto student) {
     
         return studentRepository.findById(id)
         .map(stu -> {          

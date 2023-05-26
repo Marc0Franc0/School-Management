@@ -1,9 +1,9 @@
-package com.api.notemanagementapi.model;
+package com.api.notemanagementapi.dto;
 
 import lombok.Data;
 
 @Data
-public class NoteRequest {
+public class NoteDto {
 
     private int note;
 

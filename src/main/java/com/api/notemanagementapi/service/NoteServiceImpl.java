@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.api.notemanagementapi.dto.NoteDto;
 import com.api.notemanagementapi.model.Note;
-import com.api.notemanagementapi.model.NoteRequest;
 import com.api.notemanagementapi.repository.NoteRepository;
 import com.api.notemanagementapi.repository.StudentRepository;
 import com.api.notemanagementapi.repository.SubjectRepository;
@@ -37,7 +37,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note createNote(NoteRequest student) {
+    public Note createNote(NoteDto student) {
         // TODO Auto-generated method stub
         return noteRepository.save(Note
                 .builder()
@@ -48,7 +48,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Optional<Object> updateNoteById(Long id, NoteRequest student) {
+    public Optional<Object> updateNoteById(Long id, NoteDto student) {
         // TODO Auto-generated method stub
         return noteRepository.findById(id)
                 .map(note -> {

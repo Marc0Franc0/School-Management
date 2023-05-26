@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.api.notemanagementapi.dto.TeacherDto;
 import com.api.notemanagementapi.model.Teacher;
-import com.api.notemanagementapi.model.TeacherRequest;
 import com.api.notemanagementapi.service.TeacherService;
 
 @RestController
@@ -37,7 +38,7 @@ public class TeacherController {
    }
 
    @PostMapping("/")
-   public ResponseEntity<String> createTeacher(@RequestBody TeacherRequest teacher) {
+   public ResponseEntity<String> createTeacher(@RequestBody TeacherDto teacher) {
       Teacher teacherCreated = teacherService.createTeacher(teacher);
       if (teacherCreated != null) {
          return ResponseEntity.status(HttpStatus.OK).body("Teacher created");
@@ -48,7 +49,7 @@ public class TeacherController {
    }
 
    @PutMapping("/{id}")
-   public ResponseEntity<String> updateTeacher(@PathVariable Long id, @RequestBody TeacherRequest teacher) {
+   public ResponseEntity<String> updateTeacher(@PathVariable Long id, @RequestBody TeacherDto teacher) {
       if (teacherService.getTeacherById(id).isPresent()) {
 
          teacherService.updateTeacherById(id, teacher);

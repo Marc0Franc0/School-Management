@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.api.notemanagementapi.dto.SubjectDto;
 import com.api.notemanagementapi.model.Subject;
-import com.api.notemanagementapi.model.SubjectRequest;
 import com.api.notemanagementapi.repository.SubjectRepository;
 import com.api.notemanagementapi.repository.TeacherRepository;
 
@@ -31,7 +32,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Subject createSubject(SubjectRequest subject) {
+    public Subject createSubject(SubjectDto subject) {
         // TODO Auto-generated method stub
         return subjectRepository.save(Subject
                 .builder()
@@ -42,7 +43,7 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Optional<Object> updateSubjectById(Long id, SubjectRequest subject) {
+    public Optional<Object> updateSubjectById(Long id, SubjectDto subject) {
         
         return subjectRepository.findById(id)
                 .map(subj -> {

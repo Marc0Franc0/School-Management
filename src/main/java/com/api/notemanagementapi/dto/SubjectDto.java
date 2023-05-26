@@ -1,11 +1,11 @@
-package com.api.notemanagementapi.model;
+package com.api.notemanagementapi.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class SubjectRequest {
+public class SubjectDto {
     
     @NotEmpty(message = "Name may not be empty")
     @NotNull (message = "Name may not be null")

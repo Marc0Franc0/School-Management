@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.api.notemanagementapi.dto.StudentDto;
 import com.api.notemanagementapi.model.Student;
-import com.api.notemanagementapi.model.StudentRequest;
 import com.api.notemanagementapi.service.StudentService;
 import jakarta.validation.Valid;
 
@@ -39,7 +40,7 @@ public class StudentController {
    }
 
    @PostMapping("/")
-   public ResponseEntity<String> createStudent(@Valid @RequestBody StudentRequest student, BindingResult bindingResult) {
+   public ResponseEntity<String> createStudent(@Valid @RequestBody StudentDto student, BindingResult bindingResult) {
       if (bindingResult.hasErrors()) {
          return ResponseEntity
                .status(HttpStatus.BAD_REQUEST)
@@ -54,7 +55,7 @@ public class StudentController {
    }
 
    @PutMapping("/{id}")
-   public ResponseEntity<String> updateStudent(@PathVariable Long id, @RequestBody StudentRequest student) {
+   public ResponseEntity<String> updateStudent(@PathVariable Long id, @RequestBody StudentDto student) {
 
       if (studentService.getStudentById(id).isPresent()) {
 

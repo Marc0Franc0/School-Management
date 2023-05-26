@@ -5,14 +5,14 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.api.notemanagementapi.dto.NoteDto;
 import com.api.notemanagementapi.model.Note;
-import com.api.notemanagementapi.model.NoteRequest;
 
 @Service
 public interface NoteService {
     public List<Note> getAll();
     public Optional<Note> getNoteById(Long id);
-    public Note createNote(NoteRequest student);
-    public Optional<Object> updateNoteById(Long id, NoteRequest student);
+    public Note createNote(NoteDto student);
+    public Optional<Object> updateNoteById(Long id, NoteDto student);
     public void removeNoteById (Long id);
 }
