@@ -1,8 +1,6 @@
 package com.api.notemanagementapi.security.controller;
 
 import java.util.Collections;
-
-import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.api.notemanagementapi.security.dto.AuthResponseDto;
 import com.api.notemanagementapi.security.dto.LoginDto;
 import com.api.notemanagementapi.security.dto.RegisterDto;
 import com.api.notemanagementapi.security.jwt.JwtTokenProvider;
@@ -57,7 +53,7 @@ public class AuthController {
     }
 
     // Método para registrar un usuario con role "ADMIN"
-    @PostMapping("/register")
+    @PostMapping("/registeradm")
     public ResponseEntity<String> registerAdmin(@RequestBody RegisterDto registerDto) {
         if (userRepository.existsByUsername(registerDto.getUsername())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Existing user");
