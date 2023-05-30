@@ -11,8 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,7 +37,7 @@ public class Teacher {
     
     private String cell_phone;
     
-    //Set the teacher's subjects
+    //Se establecen las materias a cargo del profesor
     @OneToMany(fetch = FetchType.EAGER,mappedBy =  "teacher", cascade = CascadeType.ALL)
     private List<Subject> subjects = new ArrayList<>(); 
 }

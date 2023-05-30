@@ -35,12 +35,12 @@ public class Subject {
 
     private String description;
 
-    // sets student grades
-
+    //Se establecen las notas de las materias
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "subject", cascade = CascadeType.ALL)
     private List<Note> notes = new ArrayList<>();
 
+    //Se establece el profesor de la materia
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "teacher_id")
