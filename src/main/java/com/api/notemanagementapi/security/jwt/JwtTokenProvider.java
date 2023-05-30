@@ -1,53 +1,88 @@
 package com.api.notemanagementapi.security.jwt;
 
-import java.util.Date;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import java.security.Key;
+import java.util.Date;
+import java.util.function.Function;
 
 @Component
+@Slf4j
 public class JwtTokenProvider {
-    //Método para la creación de un token
-    public String generateToken(Authentication authentication){
-       
-        String username = authentication.getName();
-        Date time = new Date();
-        Date tokenExpiration = new Date(time.getTime() + SecurityConstants.JWT_EXPIRATION_TOKEN);
 
-        //Generación de token
-         String token = Jwts.builder()
-        .setSubject(username)//Nombre de usuario que esta iniciando sesión
-        .setIssuedAt(new Date())//Fecha de emisión del token en el momento actual
-        .setExpiration(tokenExpiration)//Fecha de caducidad del token
-        .signWith(SignatureAlgorithm.HS512, SecurityConstants.JWT_FIRMA)/*Se utiliza este método para firmar
-        nuestro token y de esta manera evitar la manipulación o modificación de este*/
-        .compact();//Se contruye el token y se convierte en una cadena compacta
-        return token;
+    // Se utiliza para firmar los tokens
+    @Value("${jwt.secret.key}")
+    private String secretKey;
+
+    // Se utiliza para el tiempo de validez de los tokens
+    @Value("${jwt.time.expiration}")
+    private String timeExpiration;
+
+    // Método para la generación de un token de acceso
+    public String generateAccessToken(String username) {
+        return Jwts.builder()
+                // Username del token
+                .setSubject(username)
+                // Fecha de creación del token
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                // Expiración del token
+                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(timeExpiration)))
+                // Firma del token
+                .signWith(getSignatureKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
-    
-//Método para extraer el nombre de usuario de un token 
-public String getUsername (String token){
-    Claims claims = Jwts.parser()//El método parser se utiliza con el fin de analizar el token
-    .setSigningKey(SecurityConstants.JWT_FIRMA)//Establece la clave de firma, que se utiliza para verificar la firma del token
-    .parseClaimsJws(token)//Se utiliza para verificar la firma del token, a partir del String "token"
-    .getBody();/*Se obtiene el claims(cuerpo) ya verificado del token el cual contendrá la información de
-    nombre de usuario, fecha de expiración y firma del token*/
-    return claims.getSubject();//Se retorna el nombre de usuario
-}
-
-//Método para validar un token
-public Boolean validateToken(String token){
-    try {
-        //Validación del token por medio de la firma que contiene el String token(token)
-        //Si son idénticas validara el token o caso contrario saltara la excepción de abajo
-        Jwts.parser().setSigningKey(SecurityConstants.JWT_FIRMA).parseClaimsJws(token);
-        return true;
-    } catch (Exception e) {
-        throw new AuthenticationCredentialsNotFoundException("Jwt expired");
+    // Validar el token de acceso
+    public boolean isTokenValid(String token) {
+        try {
+            // El método parser se utiliza para leer un token
+            Jwts.parserBuilder()
+                    .setSigningKey(getSignatureKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return true;
+        } catch (Exception e) {
+            log.error("Token invalido, error: ".concat(e.getMessage()));
+            return false;
+        }
     }
-}
+
+    // Método para obtener el username del token
+    public String getUsernameFromToken(String token) {
+        // Se devuelve el valor de username
+        return getClaim(token, Claims::getSubject);
+    }
+
+    // Método para obtener un solo claim
+    public <T> T getClaim(String token, Function<Claims, T> claimsTFunction) {
+        // Se obtienen todos los claims
+        Claims claims = extractAllClaims(token);
+        // Se devuelve el valor
+        return claimsTFunction.apply(claims);
+    }
+
+    // Método para obtener todos los claims del token
+    public Claims extractAllClaims(String token) {
+        // El método parser se utiliza para leer un token
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignatureKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    // Método para obtener la firma del token
+    public Key getSignatureKey() {
+        // Se docodifica la secretKey
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        // Se vuelve a codificar en una codificación util a la hora de generar un token
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 }

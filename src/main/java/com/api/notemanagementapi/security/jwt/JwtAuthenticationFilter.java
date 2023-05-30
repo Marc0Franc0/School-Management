@@ -1,96 +1,93 @@
 package com.api.notemanagementapi.security.jwt;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.util.StringUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
-import com.api.notemanagementapi.security.service.CustomUserDetailsServiceImpl;
+import com.api.notemanagementapi.security.model.UserEntity;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-/*La función de esta clase será validar la información del token, en el caso de ser exitoso se
-establecerá la autenticación de un usuario en la solicitud o en el contexto de seguridad    */
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-    @Autowired
-    private CustomUserDetailsServiceImpl customUserDetailsServiceImpl;
-
-    @Autowired
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private JwtTokenProvider jwtTokenProvider;
 
-    /*
-     * Método para extraer el token JWT de la cabecera de nuestra petición
-     * Http("Authorization")
-     * luego lo validaremos y finalmente se retornará el mismo en el caso de
-     * existir, caso constrario retornara null
-     */
-    private String getRequestToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            /*
-             * Si se encuentra el token JWT, se devuelve una subcadena de "bearerToken"
-             * que comienza después de los primeros 7 caracteres hasta el final de la cadena
-             */
-            return bearerToken.substring(7, bearerToken.length());
-        } else {
-            return null;
-        }
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    // Método para intentar autenticar
     @Override
-    protected void doFilterInternal(
-            // Solicitud entrante
-            HttpServletRequest request,
-            // Respuesta saliente
-            HttpServletResponse response,
-            // Mecanismo para invocar el siguiente filtro en la siguiente cadena de filtros
-            FilterChain filterChain)
-            throws ServletException, IOException {
-        // Obtenemos los datos del token utilizando el método ya desarrollado arriba
-        String token = getRequestToken(request);
-        // Validación de la información del token
-        if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
-            // Asignación de el nombre de usuario contenido en el objeto "token" y se asigna
-            // a la variable "username"
-            String username = jwtTokenProvider.getUsername(token);
-            /*
-             * Se crea el objeto userDetails el cual contendrá todos
-             * los detalles de nuestro username según el método loadUserByUsername
-             */
-            UserDetails userDetails = customUserDetailsServiceImpl.loadUserByUsername(username);
-            // Se carga una lista de String con los roles alojados en la base de datos
-            List<String> userRoles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
-            // Se comprueba que el usuario autenticado posee alguno de los siguientes roles
-            // alojados en la base de datos
-            if (userRoles.contains("USER") || userRoles.contains("ADMIN")) {
-                /*
-                 * Se creaa el objeto UsernamePasswordAuthenticationToken el cual contendrá los
-                 * detalles de autenticación del usuario
-                 */
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null, userDetails.getAuthorities());
-                        /*
-                         * Se establece la información adicional de la autenticación, como 
-                         * por ejemplo la dirección ip del usuario, o el agente de usuario para hacer la solicitud etc.
-                         */
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                //Se establece el objeto anterior (autenticación del usuario) en el contexto de seguridad
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+    public Authentication attemptAuthentication(HttpServletRequest request,
+            HttpServletResponse response) throws AuthenticationException {
 
-            }
-            //Permite que la solicitud continue hacia el siguiente filtro en la cadena de filtro.
-            filterChain.doFilter(request, response);
+        UserEntity userEntity = null;
+        String username = "";
+        String password = "";
+        try {
+            // Se convierte en objeto UserEntity el json con los datos utilizando
+            // ObjectMapper
+            userEntity = new ObjectMapper().readValue(request.getInputStream(), UserEntity.class);
+            // Se obtienen el username y password del usuario y se almacenan
+            username = userEntity.getUsername();
+            password = userEntity.getPassword();
+        } catch (StreamReadException e) {
+            throw new RuntimeException(e);
+        } catch (DatabindException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        // Se crea la autenticación
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,
+                password);
+
+        // Se establece la autenticación con la autenticación creada
+        return getAuthenticationManager().authenticate(authenticationToken);
     }
 
+    // Se accede a este método en el caso de haber una autenticación correcta
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain chain,
+            Authentication authResult) throws IOException, ServletException {
+        /* Se obtiene el objeto con los datos del usuario autenticado y se almacena
+        en un objeto de tipo User (NO ES DE TIPO UserEntity)*/
+        User user = (User) authResult.getPrincipal();
+        // Se genera el token a partir del username del usuario ya autenticado
+        String token = jwtTokenProvider.generateAccessToken(user.getUsername());
+        // Se eestablece un header de autorización que obtiene el token
+        response.addHeader("Authorization", token);
+        
+        //Body de la respuesta
+        Map<String, Object> httpResponse = new HashMap<>();
+        //Se envia el token
+        httpResponse.put("token", token);
+        //Mensaje de autenticación correcta
+        httpResponse.put("Message", "Autenticacion Correcta");
+        //Username del token
+        httpResponse.put("Username", user.getUsername());
+
+        //Se establece el response
+        response.getWriter().write(new ObjectMapper().writeValueAsString(httpResponse));
+        //Estado de la solicitud
+        response.setStatus(HttpStatus.OK.value());
+        //Contenido de la respuesta
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().flush();
+
+        super.successfulAuthentication(request, response, chain, authResult);
+    }
 }
