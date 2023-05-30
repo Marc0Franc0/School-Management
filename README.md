@@ -5,11 +5,11 @@
 
 ## Requirements for running with maven
 
-Navigate to: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+Navigate to: [http://localhost:8080/](http://localhost:8080/)
 
 For building and running the application you need:
 
-- [JDK 20](https://www.oracle.com/java/technologies/downloads/#java20)
+- [JDK 17](https://www.oracle.com/java/technologies/downloads/#java17)
 - [Maven 3](https://maven.apache.org)
 
 Running the application locally
@@ -20,7 +20,7 @@ mvn spring-boot:run
 
 ## Requirements for running with docker
 
-Navigate to: [http://localhost:9090/swagger-ui/index.html](http://localhost:9090/swagger-ui/index.html)
+Navigate to: [http://localhost:9090/](http://localhost:9090/)
 
 For building and running the application you need:
 
