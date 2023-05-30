@@ -1,7 +1,6 @@
 package com.api.notemanagementapi.security.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,7 +11,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,18 +22,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "users")
-public class User {
+public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     private String username;
+    @NotBlank
     private String password;
-    /*Sen utiliza fetchType en EAGER para que cada vez que se acceda o se 
+    /*Se utiliza fetchType en EAGER para que cada vez que se acceda o se 
     extraiga un usuario de la BD, este se traiga todos sus roles*/
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER,
+    targetEntity = RoleEntity.class,
+    cascade = CascadeType.PERSIST)
     @JoinTable(name = "users_roles",
-    joinColumns = @JoinColumn(name="user_id",referencedColumnName = "id")
-    ,inverseJoinColumns = @JoinColumn(name="rol_id",referencedColumnName = "id"))
-    private List<Rol>roles = new ArrayList<>();
+    joinColumns = @JoinColumn(name="user_id")
+    ,inverseJoinColumns = @JoinColumn(name="rol_id"))
+    private Set<RoleEntity>roles;
 }
