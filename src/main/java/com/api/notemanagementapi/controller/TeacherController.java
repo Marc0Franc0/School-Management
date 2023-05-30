@@ -18,6 +18,8 @@ import com.api.notemanagementapi.dto.TeacherDto;
 import com.api.notemanagementapi.model.Teacher;
 import com.api.notemanagementapi.service.TeacherService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/teachers")
 public class TeacherController {
@@ -38,7 +40,7 @@ public class TeacherController {
    }
 
    @PostMapping("/")
-   public ResponseEntity<String> createTeacher(@RequestBody TeacherDto teacher) {
+   public ResponseEntity<String> createTeacher(@Valid @RequestBody TeacherDto teacher) {
       Teacher teacherCreated = teacherService.createTeacher(teacher);
       if (teacherCreated != null) {
          return ResponseEntity.status(HttpStatus.OK).body("Teacher created");
@@ -49,7 +51,7 @@ public class TeacherController {
    }
 
    @PutMapping("/{id}")
-   public ResponseEntity<String> updateTeacher(@PathVariable Long id, @RequestBody TeacherDto teacher) {
+   public ResponseEntity<String> updateTeacher(@PathVariable Long id,@Valid  @RequestBody TeacherDto teacher) {
       if (teacherService.getTeacherById(id).isPresent()) {
 
          teacherService.updateTeacherById(id, teacher);

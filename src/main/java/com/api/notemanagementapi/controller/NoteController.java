@@ -33,14 +33,14 @@ public class NoteController {
    }
 
    @GetMapping("/{id}")
-   public ResponseEntity<Note> getStudent(@PathVariable Long id) {
+   public ResponseEntity<Note> getNotes(@PathVariable Long id) {
       Optional<Note> student = noteService.getNoteById(id);
       return ResponseEntity.status(HttpStatus.OK).body(student.get());
 
    }
 
    @PostMapping("/")
-   public ResponseEntity<String> createStudent(@Valid @RequestBody NoteDto note,
+   public ResponseEntity<String> createNote(@Valid @RequestBody NoteDto note,
          BindingResult bindingResult) {
       if (bindingResult.hasErrors()) {
          return ResponseEntity
@@ -56,7 +56,7 @@ public class NoteController {
    }
 
    @PutMapping("/{id}")
-   public ResponseEntity<String> updateStudent(@PathVariable Long id, @RequestBody NoteDto note) {
+   public ResponseEntity<String> updateNote( @PathVariable Long id,@Valid @RequestBody NoteDto note) {
 
       if (noteService.getNoteById(id).isPresent()) {
 
@@ -70,7 +70,7 @@ public class NoteController {
    }
 
    @DeleteMapping("/{id}")
-   public ResponseEntity<String> removeStudentById(@PathVariable Long id) {
+   public ResponseEntity<String> removeNoteById(@PathVariable Long id) {
 
       if (noteService.getNoteById(id).isPresent()) {
          noteService.removeNoteById(id);

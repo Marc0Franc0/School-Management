@@ -55,7 +55,7 @@ public class StudentController {
    }
 
    @PutMapping("/{id}")
-   public ResponseEntity<String> updateStudent(@PathVariable Long id, @RequestBody StudentDto student) {
+   public ResponseEntity<String> updateStudent(@PathVariable Long id, @Valid @RequestBody StudentDto student) {
 
       if (studentService.getStudentById(id).isPresent()) {
 

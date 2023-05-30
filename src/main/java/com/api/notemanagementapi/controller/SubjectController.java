@@ -54,7 +54,7 @@ public class SubjectController {
    }
 
    @PutMapping("/{id}")
-   public ResponseEntity<String> updateSubject(@PathVariable Long id,@RequestBody SubjectDto subject) {
+   public ResponseEntity<String> updateSubject(@PathVariable Long id,@Valid @RequestBody SubjectDto subject) {
       if (subjectService.getSubjectById(id).isPresent()) {
 
          subjectService.updateSubjectById(id, subject);
