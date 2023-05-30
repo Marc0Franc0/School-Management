@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -12,21 +12,31 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.api.notemanagementapi.security.jwt.JwtAuthenticationEntryPoint;
 import com.api.notemanagementapi.security.jwt.JwtAuthenticationFilter;
+import com.api.notemanagementapi.security.jwt.JwtAuthorizationFilter;
+import com.api.notemanagementapi.security.jwt.JwtTokenProvider;
+import com.api.notemanagementapi.security.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
-    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    JwtAuthorizationFilter authorizationFilter;
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
-    // Consultar la información de los usuarios que inician sesión
+    //Este objeto se encarga de la administración de la autenticación de los usuarios
     @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+    AuthenticationManager authenticationManager(HttpSecurity httpSecurity, PasswordEncoder passwordEncoder)
             throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+        return httpSecurity.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder)
+                .and()
+                .build();
     }
 
     // Encriptación de las contraseñas
@@ -35,38 +45,41 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Incorporación del filtro de seguridad jwt creado
-    @Bean
-    JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
-    }
-
     /*
      * Se establece una cadena de filtros de seguridad en toda la aplicacion
      * Aquí se determinan los permisos según los roles de usuario para acceder a la
-     * aplicación
+     * aplicación y demas configuraciones
      */
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()// Se deshabilita Cross-site request forgery
-                .exceptionHandling()// Se permite el manejo de excepciones
-                // Se establece un punto de entrada personalizado de autenticación para el
-                // manejo de autenticaciones no autorizadas
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .and()
-                .sessionManagement()// Permite la gestión de sesiones
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeHttpRequests()// Toda petición http debe ser autorizada
-                .requestMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .httpBasic();
+    SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager)
+            throws Exception {
 
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        //Se utiliza la implementación para la autenticación 
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtTokenProvider);
+        //Autenticación manager que se le establece(creado dentro de esta clase)
+        jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
+        //Endpoint para autenticar
+        jwtAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
 
-        return http.build();
+        return http
+                .csrf(config ->
+                // Se deshabilita Cross-site request forgery
+                 config.disable())
+                .sessionManagement(session -> 
+                // Permite la gestion de sesiones de tipo STATELESS
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(
+                //Configuración de acceso a los endpoints 
+                        auth -> {
+                            auth.requestMatchers("/api/auth/**").permitAll();
+                            auth.anyRequest().authenticated();
+                        })
+                //Se agrega el filtro de autenticación creado
+                .addFilter(jwtAuthenticationFilter)
+                //Se agrega el filtro necesario para autenticar utilizando un token
+                //Se ejecuta luego del filtro de autenticación
+                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
 
     }
 
