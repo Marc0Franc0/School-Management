@@ -1,4 +1,4 @@
-# note-management-api
+# School-Management
 
 1. Clone this repository: git clone https://github.com/Marc0Franc0/note-management-api.git
 2. Navigate to the folder: cd note-management-api
