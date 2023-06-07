@@ -69,7 +69,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Optional<List<NoteDto>> getNotesById(Long id) {
-        //Se retorna un NoteDto ,el cual contiene tres datos -> note,studentLastName y SubjectName
+        //Se retorna una lista de NoteDto ,el cual contiene tres datos -> note,studentLastName y SubjectName
        return studentRepository.findById(id).map(stu->{
        List<NoteDto> notes = stu.getNotes()
                .stream()
@@ -83,7 +83,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Optional<List<NoteDto>> getNotesByLastname(String lastName) {
-        //Se retorna un NoteDto ,el cual contiene tres datos -> note,studentLastName y SubjectName
+        //Se retorna una lista de NoteDto ,el cual contiene tres datos -> note,studentLastName y SubjectName
         return studentRepository.findByLastName(lastName)
                 .map(stu->{
                     List<NoteDto> notes = stu.getNotes()
@@ -93,6 +93,30 @@ public class StudentServiceImpl implements StudentService {
                                         (note.getNote(),note.getStudent().getLastName(),note.getSubject().getName());
                             }).collect(Collectors.toList());
                     return notes;
+                });
+    }
+
+    @Override
+    public Optional<List<String>> getSubjectsByLastName(String lastName) {
+        //Se retorna una lista de string la cual contiene los nombres de las materias
+        return studentRepository.findByLastName(lastName)
+                .map(stu->{
+                    List<String> subjects = stu.getSubjects().stream().map(subject->{
+                        return subject.getName();
+                    }).collect(Collectors.toList());
+                    return subjects;
+                });
+    }
+
+    @Override
+    public Optional<List<String>> getSubjectsById(Long id) {
+        //Se retorna una lista de string la cual contiene los nombres de las materias
+        return studentRepository.findById(id)
+                .map(stu->{
+                    List<String> subjects = stu.getSubjects().stream().map(subject->{
+                        return subject.getName();
+                    }).collect(Collectors.toList());
+                    return subjects;
                 });
     }
 

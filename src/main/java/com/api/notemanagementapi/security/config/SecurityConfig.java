@@ -86,10 +86,14 @@ public class SecurityConfig {
                             auth.requestMatchers(HttpMethod.GET,"/api/students/{id}")
                                     .hasAnyRole("TEACHER","ADMIN");
                             //El estudiante puede solicitar todas sus notas
-                            auth.requestMatchers(HttpMethod.GET,"/api/students/{id}/notes")
+                            auth.requestMatchers(HttpMethod.GET,"/api/students/{id}/subjects")
                                     .hasAnyRole("TEACHER","ADMIN","STUDENT");
-                            auth.requestMatchers(HttpMethod.GET,"/api/students/notes")
+                            auth.requestMatchers(HttpMethod.GET,"/api/students/subjects")
                                     .hasAnyRole("TEACHER","ADMIN","STUDENT");
+                            auth.requestMatchers(HttpMethod.GET,"/api/students/{id}")
+                                    .hasAnyRole("TEACHER","ADMIN");
+                            auth.requestMatchers(HttpMethod.GET,"/api/students/{id}")
+                                    .hasAnyRole("TEACHER","ADMIN");
                             //El estudiante puede cargar sus datos
                             auth.requestMatchers(HttpMethod.POST,"/api/students/")
                                     .hasAnyRole("STUDENT","TEACHER","ADMIN");

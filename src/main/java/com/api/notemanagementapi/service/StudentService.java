@@ -19,4 +19,8 @@ public interface StudentService {
     public void removeStudentById (Long id);
     public Optional<List<NoteDto>>getNotesById(Long id);
     public Optional<List<NoteDto>> getNotesByLastname(String lastName);
+
+    public Optional<List<String>> getSubjectsByLastName(String lastName);
+
+    public Optional<List<String>> getSubjectsById(Long id);
 }

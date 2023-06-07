@@ -44,6 +44,16 @@ public class StudentController {
       return ResponseEntity.status(HttpStatus.OK).body(studentService.getNotesByLastname(lastName));
    }
 
+   @GetMapping("/{id}/subjects")
+   public ResponseEntity<Optional<List<String>>> getSubjectsById(@PathVariable Long id) {
+      return ResponseEntity.status(HttpStatus.OK).body(studentService.getSubjectsById(id));
+   }
+   @GetMapping("/subjects")
+   public ResponseEntity<Optional<List<String>>> getSubjectsByLastName(@RequestParam String lastName) {
+      return ResponseEntity.status(HttpStatus.OK).body(studentService.getSubjectsByLastName(lastName));
+   }
+
+
    @PostMapping("/")
    public ResponseEntity<String> createStudent(@Valid @RequestBody StudentDto student, BindingResult bindingResult) {
       if (bindingResult.hasErrors()) {
