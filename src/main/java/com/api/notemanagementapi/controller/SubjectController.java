@@ -54,12 +54,21 @@ public class SubjectController {
    }
 
    @PutMapping("/{id}")
-   public ResponseEntity<String> updateSubject(@PathVariable Long id,@Valid @RequestBody SubjectDto subject) {
+   public ResponseEntity<String> updateSubject(@PathVariable Long id,@Valid @RequestBody SubjectDto subject,
+                                               BindingResult bindingResult) {
       if (subjectService.getSubjectById(id).isPresent()) {
 
-         subjectService.updateSubjectById(id, subject);
+         if (bindingResult.hasErrors()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(bindingResult.getFieldError().getDefaultMessage());
+         } else {
+            subjectService.updateSubjectById(id, subject);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("Subject modified");
+         }
 
-         return ResponseEntity.status(HttpStatus.OK).body("Subject modified");
       } else {
          return ResponseEntity.status(HttpStatus.OK).body("Subject not found");
       }

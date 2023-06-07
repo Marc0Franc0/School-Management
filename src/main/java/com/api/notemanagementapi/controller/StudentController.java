@@ -2,18 +2,14 @@ package com.api.notemanagementapi.controller;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.api.notemanagementapi.dto.NoteDto;
+import com.api.notemanagementapi.model.Note;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.api.notemanagementapi.dto.StudentDto;
 import com.api.notemanagementapi.model.Student;
@@ -39,6 +35,15 @@ public class StudentController {
 
    }
 
+   @GetMapping("/{id}/notes")
+   public ResponseEntity<Optional<List<NoteDto>>> getNotesById(@PathVariable Long id) {
+      return ResponseEntity.status(HttpStatus.OK).body(studentService.getNotesById(id));
+   }
+   @GetMapping("/notes")
+   public ResponseEntity<Optional<List<NoteDto>>> getNotesByLastName(@RequestParam String lastName) {
+      return ResponseEntity.status(HttpStatus.OK).body(studentService.getNotesByLastname(lastName));
+   }
+
    @PostMapping("/")
    public ResponseEntity<String> createStudent(@Valid @RequestBody StudentDto student, BindingResult bindingResult) {
       if (bindingResult.hasErrors()) {
@@ -55,13 +60,21 @@ public class StudentController {
    }
 
    @PutMapping("/{id}")
-   public ResponseEntity<String> updateStudent(@PathVariable Long id, @Valid @RequestBody StudentDto student) {
+   public ResponseEntity<String> updateStudent(@PathVariable Long id, @Valid @RequestBody StudentDto student
+   ,BindingResult bindingResult) {
 
       if (studentService.getStudentById(id).isPresent()) {
+         if (bindingResult.hasErrors()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(bindingResult.getFieldError().getDefaultMessage());
+         } else {
+            studentService.updateStudentById(id, student);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("Student modified");
+         }
 
-         studentService.updateStudentById(id, student);
-
-         return ResponseEntity.status(HttpStatus.OK).body("Student modified");
       } else {
          return ResponseEntity.status(HttpStatus.OK).body("Student not found");
       }

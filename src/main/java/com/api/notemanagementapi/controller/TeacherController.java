@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,23 +41,33 @@ public class TeacherController {
    }
 
    @PostMapping("/")
-   public ResponseEntity<String> createTeacher(@Valid @RequestBody TeacherDto teacher) {
-      Teacher teacherCreated = teacherService.createTeacher(teacher);
-      if (teacherCreated != null) {
-         return ResponseEntity.status(HttpStatus.OK).body("Teacher created");
+   public ResponseEntity<String> createTeacher(@Valid @RequestBody TeacherDto teacher, BindingResult bindingResult) {
+      if (bindingResult.hasErrors()) {
+         return ResponseEntity
+                 .status(HttpStatus.BAD_REQUEST)
+                 .body(bindingResult.getFieldError().getDefaultMessage());
       } else {
-         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Teacher not created");
+         teacherService.createTeacher(teacher);
+         return ResponseEntity
+                 .status(HttpStatus.OK)
+                 .body("Teacher created");
       }
-
    }
 
    @PutMapping("/{id}")
-   public ResponseEntity<String> updateTeacher(@PathVariable Long id,@Valid  @RequestBody TeacherDto teacher) {
+   public ResponseEntity<String> updateTeacher(@PathVariable Long id,@Valid  @RequestBody TeacherDto teacher
+   ,BindingResult bindingResult) {
       if (teacherService.getTeacherById(id).isPresent()) {
-
-         teacherService.updateTeacherById(id, teacher);
-
-         return ResponseEntity.status(HttpStatus.OK).body("Teacher modified");
+         if (bindingResult.hasErrors()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(bindingResult.getFieldError().getDefaultMessage());
+         } else {
+            teacherService.updateTeacherById(id, teacher);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("Teacher modified");
+         }
       } else {
          return ResponseEntity.status(HttpStatus.OK).body("Teacher not found");
       }
