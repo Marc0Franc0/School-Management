@@ -43,13 +43,13 @@ public class Student {
 
   //Se establecen las materias de los estudiantes
   //Relación muchos a muchos -> "student_id" <-> "subject_id"
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "students_subjects", joinColumns = { @JoinColumn(name = "student_id") }, inverseJoinColumns = {
       @JoinColumn(name = "subject_id") })
   List<Subject> subjects = new ArrayList<>();
 
   //Se establecen las notas de los alumnos
-  @JsonIgnore
+ @JsonIgnore
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "student", cascade = CascadeType.ALL)
   private List<Note> notes;
 }
