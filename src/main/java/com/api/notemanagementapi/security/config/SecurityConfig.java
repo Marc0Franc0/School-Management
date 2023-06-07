@@ -3,6 +3,7 @@ package com.api.notemanagementapi.security.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -71,7 +72,36 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                 //Configuración de acceso a los endpoints 
                         auth -> {
+                            //El registro de un usuario e inicio sesion no se le restringe a ningun usuario
                             auth.requestMatchers("/api/auth/**").permitAll();
+                            //CRUD de entidad Teacher----------
+                            auth.requestMatchers("/api/teachers/**")
+                                    .hasAnyRole("ADMIN","TEACHER");
+                            //CRUD de entidad Subject----------
+                            auth.requestMatchers("/api/subjects/**")
+                                    .hasAnyRole("ADMIN","TEACHER");
+                            //CRUD de entidad Student----------
+                            auth.requestMatchers(HttpMethod.GET,"/api/students/")
+                                    .hasAnyRole("TEACHER","ADMIN");
+                            auth.requestMatchers(HttpMethod.GET,"/api/students/{id}")
+                                    .hasAnyRole("TEACHER","ADMIN");
+                            //El estudiante puede solicitar todas sus notas
+                            auth.requestMatchers(HttpMethod.GET,"/api/students/{id}/notes")
+                                    .hasAnyRole("TEACHER","ADMIN","STUDENT");
+                            auth.requestMatchers(HttpMethod.GET,"/api/students/notes")
+                                    .hasAnyRole("TEACHER","ADMIN","STUDENT");
+                            //El estudiante puede cargar sus datos
+                            auth.requestMatchers(HttpMethod.POST,"/api/students/")
+                                    .hasAnyRole("STUDENT","TEACHER","ADMIN");
+                            //El estudiante puede modificar sus datos
+                            auth.requestMatchers(HttpMethod.PUT,"/api/students/{id}")
+                                    .hasAnyRole("STUDENT","TEACHER","ADMIN");
+                            auth.requestMatchers(HttpMethod.DELETE,"/api/students/{id}")
+                                    .hasAnyRole("TEACHER","ADMIN");
+                            //CRUD de entidad Note----------
+                            auth.requestMatchers("/api/notes/**")
+                                    .hasAnyRole("ADMIN","TEACHER");
+                            //Para demas endpoint solo se necesita estar autenticado
                             auth.anyRequest().authenticated();
                         })
                 //Se agrega el filtro de autenticación creado
