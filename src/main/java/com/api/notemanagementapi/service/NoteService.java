@@ -12,7 +12,7 @@ import com.api.notemanagementapi.model.Note;
 public interface NoteService {
     public List<Note> getAll();
     public Optional<Note> getNoteById(Long id);
-    public Note createNote(NoteDto student);
-    public Optional<Object> updateNoteById(Long id, NoteDto student);
+    public Note createNote(NoteDto note);
+    public Optional<Object> updateNoteById(Long id, NoteDto note);
     public void removeNoteById (Long id);
 }

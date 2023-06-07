@@ -37,29 +37,29 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Note createNote(NoteDto student) {
+    public Note createNote(NoteDto note) {
         // TODO Auto-generated method stub
         return noteRepository.save(Note
                 .builder()
-                .note(student.getNote())
-                .student(studentRepository.findById(student.getIdStudent()).get())
-                .subject(subjectRepository.findById(student.getIdSubject()).get())
+                .note(note.getNote())
+                .student(studentRepository.findByLastName(note.getStudentLastName()).get())
+                .subject(subjectRepository.findByName(note.getSubjectName()).get())
                 .build());
     }
 
     @Override
-    public Optional<Object> updateNoteById(Long id, NoteDto student) {
+    public Optional<Object> updateNoteById(Long id, NoteDto note) {
         // TODO Auto-generated method stub
         return noteRepository.findById(id)
-                .map(note -> {
-                    note = Note
+                .map(not -> {
+                    not = Note
                             .builder()
                             .id(id)
-                            .note(student.getNote())
-                            .student(studentRepository.findById(student.getIdStudent()).get())
-                            .subject(subjectRepository.findById(student.getIdSubject()).get())
+                            .note(not.getNote())
+                            .student(studentRepository.findByLastName(note.getStudentLastName()).get())
+                            .subject(subjectRepository.findByName(note.getSubjectName()).get())
                             .build();
-                    return noteRepository.save(note);
+                    return noteRepository.save(not);
                 });
     }
 
