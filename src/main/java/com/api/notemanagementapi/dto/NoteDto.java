@@ -1,17 +1,22 @@
 package com.api.notemanagementapi.dto;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class NoteDto {
-    
-    @NotEmpty(message = "Note may not be empty")
-    @NotNull (message = "Note may not be null")
+
+    @NotBlank(message = "Verificar nota ingresada")
     private String note;
+    @NotBlank(message = "Verificar nota ingresada")
+    private String studentLastName;
+    @NotBlank(message = "Verificar nota ingresada")
+    private String subjectName;
 
-    private Long idStudent;
+    public NoteDto(String note, String studentLastName, String subjectName) {
+        this.note=note;
+        this.studentLastName=studentLastName;
+        this.subjectName=subjectName;
 
-    private Long idSubject;
+    }
 }
