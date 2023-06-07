@@ -2,6 +2,9 @@ package com.api.notemanagementapi.service;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.api.notemanagementapi.dto.NoteDto;
+import com.api.notemanagementapi.model.Note;
 import org.springframework.stereotype.Service;
 
 import com.api.notemanagementapi.dto.StudentDto;
@@ -14,4 +17,6 @@ public interface StudentService {
     public Student createStudent(StudentDto student);
     public Optional<Object> updateStudentById(Long id, StudentDto student);
     public void removeStudentById (Long id);
+    public Optional<List<NoteDto>>getNotesById(Long id);
+    public Optional<List<NoteDto>> getNotesByLastname(String lastName);
 }

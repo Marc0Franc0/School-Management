@@ -2,6 +2,11 @@ package com.api.notemanagementapi.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.api.notemanagementapi.dto.NoteDto;
+import com.api.notemanagementapi.model.Note;
+import com.api.notemanagementapi.model.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,5 +66,35 @@ public class StudentServiceImpl implements StudentService {
     public void removeStudentById(Long id) {
         studentRepository.deleteById(id);
     }
-    
+
+    @Override
+    public Optional<List<NoteDto>> getNotesById(Long id) {
+        //Se retorna un NoteDto ,el cual contiene tres datos -> note,studentLastName y SubjectName
+       return studentRepository.findById(id).map(stu->{
+       List<NoteDto> notes = stu.getNotes()
+               .stream()
+               .map(note->{
+                   return new NoteDto
+                           (note.getNote(),note.getStudent().getLastName(),note.getSubject().getName());
+       }).collect(Collectors.toList());
+       return notes;
+       });
+    }
+
+    @Override
+    public Optional<List<NoteDto>> getNotesByLastname(String lastName) {
+        //Se retorna un NoteDto ,el cual contiene tres datos -> note,studentLastName y SubjectName
+        return studentRepository.findByLastName(lastName)
+                .map(stu->{
+                    List<NoteDto> notes = stu.getNotes()
+                            .stream()
+                            .map(note->{
+                                return new NoteDto
+                                        (note.getNote(),note.getStudent().getLastName(),note.getSubject().getName());
+                            }).collect(Collectors.toList());
+                    return notes;
+                });
+    }
+
+
 }
