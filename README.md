@@ -35,7 +35,7 @@ docker compose up -d --build
 
 Dirigirse a: [http://localhost:9090/](http://localhost:9090/)
 
-## Requerimientos para ejecutar con Docker
+## Requerimientos para ejecutar con Maven
 
 Para construir y ejecutar la aplicación necesita:
 
