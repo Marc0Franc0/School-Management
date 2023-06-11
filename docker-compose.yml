@@ -2,7 +2,8 @@ version: "3.9"
 services:
   app:
     container_name: app-container
-    build: .
+  #build: .
+    image: marc0franc0/app-school-magement:1.0.0
     ports:
       - "9090:8080"
     restart: always
@@ -13,8 +14,6 @@ services:
       SPRING_DATASOURCE_PASSWORD: root
       JWT_SECRET_KEY: 76397924423F4528482B4D6251655468576D5A7134743777217A25432A46294A
       JWT_TIME_EXPIRATION: 86400000
-     # DATA_USER_ADMIN: marco
-      #DATA_PASSWORD_ADMIN : 1234
     networks:
       - app-db
   db:

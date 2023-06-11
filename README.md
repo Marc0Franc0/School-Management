@@ -30,7 +30,7 @@ Para construir y ejecutar la aplicación necesita:
 Ejecutar localmente
 
 ```shell
-docker compose up -d --build
+docker compose up
 ```
 
 Dirigirse a: [http://localhost:9090/](http://localhost:9090/)
@@ -43,6 +43,11 @@ Para construir y ejecutar la aplicación necesita:
 - [Maven 3+](https://maven.apache.org)
 
 Configurar datos de la base de datos MySQL: [application.properties](https://github.com/Marc0Franc0/School-Management/blob/main/src/main/resources/application.properties)
+
+Configurar JWT: [application.properties](https://github.com/Marc0Franc0/School-Management/blob/main/src/main/resources/application.properties)
+- jwt.secret.key = 76397924423F4528482B4D6251655468576D5A7134743777217A25432A46294A 
+(Se utiliza para firmar los tokens)
+- jwt.time.expiration = 86400000 (equivalente a un día)
 
 Ejecutar localmente
 
