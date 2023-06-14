@@ -27,7 +27,7 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(unique = true)
+   @Column(unique = true)
     private String name;
 
     private String lastName;
@@ -37,7 +37,7 @@ public class Teacher {
     
     private String cell_phone;
     
-    //Se establecen las materias a cargo del profesor
+    //Materias a cargo del profesor
     @OneToMany(fetch = FetchType.EAGER,mappedBy =  "teacher", cascade = CascadeType.ALL)
     private List<Subject> subjects = new ArrayList<>(); 
 }

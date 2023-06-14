@@ -15,11 +15,10 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
-
+import lombok.AllArgsConstructor;
 @Getter
 @Builder
 @NoArgsConstructor
@@ -41,14 +40,14 @@ public class Student {
 
   private String cell_phone;
 
-  //Se establecen las materias de los estudiantes
+  //Materias de los estudiantes
   //Relación muchos a muchos -> "student_id" <-> "subject_id"
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "students_subjects", joinColumns = { @JoinColumn(name = "student_id") }, inverseJoinColumns = {
       @JoinColumn(name = "subject_id") })
   List<Subject> subjects = new ArrayList<>();
 
-  //Se establecen las notas de los alumnos
+  //Notas de los alumnos
  @JsonIgnore
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "student", cascade = CascadeType.ALL)
   private List<Note> notes;

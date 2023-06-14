@@ -35,7 +35,7 @@ public class Subject {
 
     private String description;
 
-    //Se establece el profesor de la materia
+    //Profesor de la materia
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "teacher_id")
