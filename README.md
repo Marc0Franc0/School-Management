@@ -1,6 +1,6 @@
 # [School-Management](https://github.com/Marc0Franc0/School-Management#school-management)
 
-El proyecto consiste en un sistema de gestión integral para una institución educativa, con el objetivo de facilitar la administración de estudiantes, profesores, materias y notas
+El proyecto tiene la posibilidad de gestionar una institución educativa, con el objetivo de facilitar la administración de estudiantes, profesores, materias y notas.
 
 ## Características
 - Registro de usuario e inicio de sesión con autenticación JWT 
