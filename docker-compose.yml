@@ -2,8 +2,7 @@ version: "3.9"
 services:
   app:
     container_name: app-container
-    #build: .
-    image: marc0franc0/app-school-magement:1.0.1
+    build: .
     ports:
       - "9090:8080"
     restart: always
@@ -24,7 +23,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: note_management
     ports:
-      - "3306:3306"
+      - "5000:3306"
     networks:
       - app-db
 networks:
