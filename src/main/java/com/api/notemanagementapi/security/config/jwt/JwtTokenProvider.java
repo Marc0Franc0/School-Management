@@ -1,4 +1,4 @@
-package com.api.notemanagementapi.security.jwt;
+package com.api.notemanagementapi.security.config.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

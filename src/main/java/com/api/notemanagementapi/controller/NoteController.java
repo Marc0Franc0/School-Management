@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.api.notemanagementapi.service.crud.CrudService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/notes")
+@SecurityRequirement(name="Bearer Authentication")
 public class NoteController {
 
    @Autowired

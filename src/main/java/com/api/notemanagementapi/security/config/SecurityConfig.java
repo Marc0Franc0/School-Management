@@ -13,9 +13,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.api.notemanagementapi.security.jwt.JwtAuthenticationFilter;
-import com.api.notemanagementapi.security.jwt.JwtAuthorizationFilter;
-import com.api.notemanagementapi.security.jwt.JwtTokenProvider;
+import com.api.notemanagementapi.security.config.jwt.JwtAuthenticationFilter;
+import com.api.notemanagementapi.security.config.jwt.JwtAuthorizationFilter;
+import com.api.notemanagementapi.security.config.jwt.JwtTokenProvider;
 import com.api.notemanagementapi.security.service.UserDetailsServiceImpl;
 
 @Configuration
@@ -55,25 +55,29 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager)
             throws Exception {
 
-        //Se utiliza la implementación para la autenticación 
+        //Se utiliza la implementación para la autenticación
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtTokenProvider);
         //Autenticación manager que se le establece(creado dentro de esta clase)
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
         //Endpoint para autenticar
         jwtAuthenticationFilter.setFilterProcessesUrl("/api/auth/login");
-
         return http
                 .csrf(config ->
                 // Se deshabilita Cross-site request forgery
                  config.disable())
-                .sessionManagement(session -> 
+                .sessionManagement(session ->
                 // Permite la gestion de sesiones de tipo STATELESS
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(
-                //Configuración de acceso a los endpoints 
+                //Configuración de acceso a los endpoints
                         auth -> {
+                            auth.requestMatchers
+                                    ("/swagger-ui.html","/v3/api-docs/**","/swagger-ui/**").permitAll();
                             //El registro de un usuario e inicio sesion no se le restringe a ningun usuario
-                            auth.requestMatchers("/api/auth/**").permitAll();
+                            auth.requestMatchers("/api/auth/register","/api/auth/login").permitAll();
+                            //Endpoint para eliminar un usuario
+                            auth.requestMatchers(HttpMethod.DELETE,"/api/{id}")
+                                    .hasAnyRole("ADMIN","TEACHER");
                             //CRUD de entidad Teacher----------
                             auth.requestMatchers("/api/teachers/**")
                                     .hasAnyRole("ADMIN","TEACHER");

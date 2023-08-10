@@ -1,4 +1,4 @@
-package com.api.notemanagementapi.security.jwt;
+package com.api.notemanagementapi.security.config.jwt;
 
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;

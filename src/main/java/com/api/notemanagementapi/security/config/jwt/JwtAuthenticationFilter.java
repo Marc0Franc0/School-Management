@@ -1,4 +1,4 @@
-package com.api.notemanagementapi.security.jwt;
+package com.api.notemanagementapi.security.config.jwt;
 
 import com.api.notemanagementapi.security.model.UserEntity;
 import com.fasterxml.jackson.core.exc.StreamReadException;
@@ -21,7 +21,6 @@ import java.util.Map;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private JwtTokenProvider jwtTokenProvider;
-
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }

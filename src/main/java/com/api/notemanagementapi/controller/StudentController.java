@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.api.notemanagementapi.dto.NoteDto;
 import com.api.notemanagementapi.model.Note;
 import com.api.notemanagementapi.service.crud.CrudService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/students")
+@SecurityRequirement(name="Bearer Authentication")
 public class StudentController {
 
    @Autowired
