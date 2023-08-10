@@ -2,10 +2,18 @@ package com.api.notemanagementapi.dto;
 
 import java.util.Set;
 
-import com.api.notemanagementapi.model.Person;
-import lombok.Data;
+import jakarta.persistence.Embedded;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class StudentDto extends Person {
+@Getter
+@Setter
+@Builder
+public class StudentDto{
+    @Embedded
+    private Person personalData;
     private Set<Long> id_subjects;
+
+
 }

@@ -34,5 +34,14 @@ public class Note {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "subject_id")
     private Subject subject;
-    
+
+    @Override
+    public String toString() {
+        return "Note{" +
+                "id=" + id +
+                ", note='" + note + '\'' +
+                ", student=" + student.getId() +
+                ", subject=" + subject.getId() +
+                '}';
+    }
 }

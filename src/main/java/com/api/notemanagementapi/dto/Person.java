@@ -1,12 +1,15 @@
-package com.api.notemanagementapi.model;
+package com.api.notemanagementapi.dto;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Data
-public abstract class Person {
+@Embeddable
+@NoArgsConstructor
+public class Person {
 
     @NotBlank(message = "Verificar nombre ingresado")
     private String name;
@@ -20,4 +23,11 @@ public abstract class Person {
 
     @NotBlank(message = "Verificar celular ingresado")
     private String cell_phone;
+
+    public Person(String name, String lastName,String email,String cell_phone) {
+        this.email = email;
+        this.lastName = lastName;
+        this.name = name;
+        this.cell_phone = cell_phone;
+    }
 }

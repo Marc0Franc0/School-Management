@@ -5,7 +5,9 @@ import java.util.Optional;
 
 import com.api.notemanagementapi.dto.NoteDto;
 import com.api.notemanagementapi.model.Note;
+import com.api.notemanagementapi.service.crud.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -30,7 +32,7 @@ public class StudentController {
 
    @GetMapping("/{id}")
    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
-      Optional<Student> student = studentService.getStudentById(id);
+      Optional<Student> student = studentService.getById(id);
       return ResponseEntity.status(HttpStatus.OK).body(student.get());
 
    }
@@ -61,7 +63,7 @@ public class StudentController {
                .status(HttpStatus.BAD_REQUEST)
                .body(bindingResult.getFieldError().getDefaultMessage());
       } else {
-         studentService.createStudent(student);
+         studentService.create(student);
          return ResponseEntity
                .status(HttpStatus.OK)
                .body("Student created");
@@ -73,13 +75,13 @@ public class StudentController {
    public ResponseEntity<String> updateStudent(@PathVariable Long id, @Valid @RequestBody StudentDto student
    ,BindingResult bindingResult) {
 
-      if (studentService.getStudentById(id).isPresent()) {
+      if (studentService.getById(id).isPresent()) {
          if (bindingResult.hasErrors()) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(bindingResult.getFieldError().getDefaultMessage());
          } else {
-            studentService.updateStudentById(id, student);
+            studentService.updateById(id, student);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body("Student modified");
@@ -94,8 +96,8 @@ public class StudentController {
    @DeleteMapping("/{id}")
    public ResponseEntity<String> removeStudentById(@PathVariable Long id) {
 
-      if (studentService.getStudentById(id).isPresent()) {
-         studentService.removeStudentById(id);
+      if (studentService.getById(id).isPresent()) {
+         studentService.removeById(id);
          return ResponseEntity.status(HttpStatus.OK).body("Student deleted");
       } else {
          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student not found");

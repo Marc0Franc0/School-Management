@@ -2,6 +2,8 @@ package com.api.notemanagementapi.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CascadeType;
@@ -38,6 +40,18 @@ public class Student {
   @Column(unique = true)
   private String email;
 
+  @Override
+  public String toString() {
+    return "Student{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", lastName='" + lastName + '\'' +
+            ", email='" + email + '\'' +
+            ", cell_phone='" + cell_phone + '\'' +
+            ", IDsubjects=" + subjects.stream().map(subject -> subject.getId()).collect(Collectors.toList()) +
+            '}';
+  }
+
   private String cell_phone;
 
   //Materias de los estudiantes
@@ -48,7 +62,6 @@ public class Student {
   List<Subject> subjects = new ArrayList<>();
 
   //Notas de los alumnos
- @JsonIgnore
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "student", cascade = CascadeType.ALL)
   private List<Note> notes;
 }

@@ -9,14 +9,14 @@ public class NoteDto {
     @NotBlank(message = "Verificar nota ingresada")
     private String note;
     @NotBlank(message = "Verificar nota ingresada")
-    private String studentLastName;
+    private Long studentId;
     @NotBlank(message = "Verificar nota ingresada")
-    private String subjectName;
+    private Long subjectId;
 
-    public NoteDto(String note, String studentLastName, String subjectName) {
+    public NoteDto(String note, Long studentId, Long subjectId) {
         this.note=note;
-        this.studentLastName=studentLastName;
-        this.subjectName=subjectName;
+        this.studentId=studentId;
+        this.subjectId=subjectId;
 
     }
 }

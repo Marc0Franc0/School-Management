@@ -2,7 +2,10 @@ package com.api.notemanagementapi.controller;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.api.notemanagementapi.service.crud.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -25,7 +28,8 @@ import jakarta.validation.Valid;
 public class NoteController {
 
    @Autowired
-   NoteService noteService;
+   @Qualifier("NoteService")
+   CrudService noteService;
 
    @GetMapping("/")
    public ResponseEntity<List<Note>> getAll() {
@@ -34,7 +38,7 @@ public class NoteController {
 
    @GetMapping("/{id}")
    public ResponseEntity<Note> getNotes(@PathVariable Long id) {
-      Optional<Note> student = noteService.getNoteById(id);
+      Optional<Note> student = noteService.getById(id);
       return ResponseEntity.status(HttpStatus.OK).body(student.get());
 
    }
@@ -47,7 +51,7 @@ public class NoteController {
                .status(HttpStatus.BAD_REQUEST)
                .body(bindingResult.getFieldError().getDefaultMessage());
       } else {
-         noteService.createNote(note);
+         noteService.create(note);
          return ResponseEntity
                .status(HttpStatus.OK)
                .body("Note created");
@@ -58,9 +62,9 @@ public class NoteController {
    @PutMapping("/{id}")
    public ResponseEntity<String> updateNote( @PathVariable Long id,@Valid @RequestBody NoteDto note) {
 
-      if (noteService.getNoteById(id).isPresent()) {
+      if (noteService.getById(id).isPresent()) {
 
-         noteService.updateNoteById(id, note);
+         noteService.updateById(id, note);
 
          return ResponseEntity.status(HttpStatus.OK).body("Note modified");
       } else {
@@ -72,8 +76,8 @@ public class NoteController {
    @DeleteMapping("/{id}")
    public ResponseEntity<String> removeNoteById(@PathVariable Long id) {
 
-      if (noteService.getNoteById(id).isPresent()) {
-         noteService.removeNoteById(id);
+      if (noteService.getById(id).isPresent()) {
+         noteService.removeById(id);
          return ResponseEntity.status(HttpStatus.OK).body("Note deleted");
       } else {
          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Note not found");

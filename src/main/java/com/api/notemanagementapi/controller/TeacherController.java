@@ -2,7 +2,10 @@ package com.api.notemanagementapi.controller;
 
 import java.util.List;
 import java.util.Optional;
+
+import com.api.notemanagementapi.service.crud.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -26,7 +29,8 @@ import jakarta.validation.Valid;
 public class TeacherController {
 
    @Autowired
-   TeacherService teacherService;
+   @Qualifier("TeacherService")
+   CrudService teacherService;
 
    @GetMapping("/")
    public ResponseEntity<List<Teacher>> getAll() {
@@ -35,7 +39,7 @@ public class TeacherController {
 
    @GetMapping("/{id}")
    public ResponseEntity<Teacher> getTeacher(@PathVariable Long id) {
-      Optional<Teacher> teacher = teacherService.getTeacherById(id);
+      Optional<Teacher> teacher = teacherService.getById(id);
       return ResponseEntity.status(HttpStatus.OK).body(teacher.get());
 
    }
@@ -47,7 +51,7 @@ public class TeacherController {
                  .status(HttpStatus.BAD_REQUEST)
                  .body(bindingResult.getFieldError().getDefaultMessage());
       } else {
-         teacherService.createTeacher(teacher);
+         teacherService.create(teacher);
          return ResponseEntity
                  .status(HttpStatus.OK)
                  .body("Teacher created");
@@ -57,13 +61,13 @@ public class TeacherController {
    @PutMapping("/{id}")
    public ResponseEntity<String> updateTeacher(@PathVariable Long id,@Valid  @RequestBody TeacherDto teacher
    ,BindingResult bindingResult) {
-      if (teacherService.getTeacherById(id).isPresent()) {
+      if (teacherService.getById(id).isPresent()) {
          if (bindingResult.hasErrors()) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(bindingResult.getFieldError().getDefaultMessage());
          } else {
-            teacherService.updateTeacherById(id, teacher);
+            teacherService.updateById(id, teacher);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body("Teacher modified");
@@ -76,8 +80,8 @@ public class TeacherController {
 
    @DeleteMapping("/{id}")
    public ResponseEntity<String> removeTeacherById(@PathVariable Long id) {
-      if (teacherService.getTeacherById(id).isPresent()) {
-         teacherService.removeTeacherById(id);
+      if (teacherService.getById(id).isPresent()) {
+         teacherService.removeById(id);
          return ResponseEntity.status(HttpStatus.OK).body("Teacher deleted");
       } else {
          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Teacher not found");

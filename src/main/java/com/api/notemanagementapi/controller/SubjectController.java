@@ -3,7 +3,9 @@ package com.api.notemanagementapi.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.api.notemanagementapi.service.crud.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -26,7 +28,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/subjects")
 public class SubjectController {
     @Autowired
-    SubjectService subjectService;
+    @Qualifier("SubjectService")
+    CrudService subjectService;
 
     @GetMapping("/")
    public ResponseEntity<List<Subject>> getAll() {
@@ -35,7 +38,7 @@ public class SubjectController {
 
    @GetMapping("/{id}")
    public ResponseEntity<Subject> getSubject(@PathVariable Long id) {
-      Optional<Subject> subject = subjectService.getSubjectById(id);
+      Optional<Subject> subject = subjectService.getById(id);
       return ResponseEntity.status(HttpStatus.OK).body(subject.get());
    }
 
@@ -46,7 +49,7 @@ public class SubjectController {
                .status(HttpStatus.BAD_REQUEST)
                .body(bindingResult.getFieldError().getDefaultMessage());
       } else {
-         subjectService.createSubject(subject);
+         subjectService.create(subject);
          return ResponseEntity
                .status(HttpStatus.OK)
                .body("Subject created");
@@ -56,14 +59,14 @@ public class SubjectController {
    @PutMapping("/{id}")
    public ResponseEntity<String> updateSubject(@PathVariable Long id,@Valid @RequestBody SubjectDto subject,
                                                BindingResult bindingResult) {
-      if (subjectService.getSubjectById(id).isPresent()) {
+      if (subjectService.getById(id).isPresent()) {
 
          if (bindingResult.hasErrors()) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(bindingResult.getFieldError().getDefaultMessage());
          } else {
-            subjectService.updateSubjectById(id, subject);
+            subjectService.updateById(id, subject);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body("Subject modified");
@@ -78,8 +81,8 @@ public class SubjectController {
     @DeleteMapping("/{id}")
    public ResponseEntity<String> removeSubjectById(@PathVariable Long id) {
       
-      if (subjectService.getSubjectById(id).isPresent()) {
-         subjectService.removeSubjectById(id);
+      if (subjectService.getById(id).isPresent()) {
+         subjectService.removeById(id);
          return ResponseEntity.status(HttpStatus.OK).body("Subject deleted");
       } else {
          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Subject not found");

@@ -11,16 +11,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity 
+@Entity
 @Table(name = "teachers")
 public class Teacher {
     @Id
@@ -30,14 +27,24 @@ public class Teacher {
    @Column(unique = true)
     private String name;
 
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", cell_phone='" + cell_phone + '\'' +
+                '}';
+    }
+
     private String lastName;
-    
+
     @Column(unique = true)
     private String email;
     
     private String cell_phone;
-    
-    //Materias a cargo del profesor
-    @OneToMany(fetch = FetchType.EAGER,mappedBy =  "teacher", cascade = CascadeType.ALL)
-    private List<Subject> subjects = new ArrayList<>(); 
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "teacher",cascade = CascadeType.ALL)
+    private List<Subject> subjects;
 }
