@@ -1,4 +1,4 @@
-package com.api.notemanagementapi.springdoc;
+package com.api.notemanagementapi.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

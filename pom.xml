@@ -11,9 +11,10 @@
 	</parent>
 	<groupId>com.api</groupId>
 	<artifactId>Shoool-Management</artifactId>
-	<version>1.0.1</version>
-	<name>note-management-api</name>
-	<description>Demo project for Spring Boot</description>
+	<version>1.0.2</version>
+	<name>School-Management</name>
+	<description>El proyecto tiene la posibilidad de gestionar una institución educativa, con el objetivo " +
+		"de facilitar la administración de estudiantes, profesores, materias y notas.</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -74,7 +75,13 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.1.0</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>6.1.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>
