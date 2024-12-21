@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.api.notemanagementapi.service.crud.CrudService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -21,18 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.notemanagementapi.dto.TeacherDto;
 import com.api.notemanagementapi.model.Teacher;
-import com.api.notemanagementapi.service.TeacherService;
-
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/teachers")
-@SecurityRequirement(name="Bearer Authentication")
+@RequestMapping("/api/v1/teachers")
 public class TeacherController {
 
    @Autowired
    @Qualifier("TeacherService")
-   CrudService teacherService;
+   private CrudService teacherService;
 
    @GetMapping("/")
    public ResponseEntity<List<Teacher>> getAll() {

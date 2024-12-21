@@ -33,14 +33,12 @@ public class NoteService implements CrudService {
 
     @Override
     public Optional<Object> getById(Long id) {
-        // TODO Auto-generated method stub
         return Optional.of(noteRepository.findById(id));
     }
 
     @Override
     public Object create(Object object) {
         NoteDto note = (NoteDto)object;
-        // TODO Auto-generated method stub
         return noteRepository.save(Note
                 .builder()
                 .note(note.getNote())
@@ -52,7 +50,6 @@ public class NoteService implements CrudService {
     @Override
     public Optional<Object> updateById(Long id, Object object) {
         NoteDto note = (NoteDto)object;
-        // TODO Auto-generated method stub
         return noteRepository.findById(id)
                 .map(not -> {
                     not = Note
@@ -68,7 +65,6 @@ public class NoteService implements CrudService {
 
     @Override
     public void removeById(Long id) {
-        // TODO Auto-generated method stub
         noteRepository.deleteById(id);
     }
 

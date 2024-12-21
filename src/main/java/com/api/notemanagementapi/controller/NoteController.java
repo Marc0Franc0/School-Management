@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.api.notemanagementapi.service.crud.CrudService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -21,17 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.notemanagementapi.dto.NoteDto;
 import com.api.notemanagementapi.model.Note;
-import com.api.notemanagementapi.service.NoteService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/notes")
-@SecurityRequirement(name="Bearer Authentication")
+@RequestMapping("/api/v1/notes")
 public class NoteController {
 
    @Autowired
    @Qualifier("NoteService")
-   CrudService noteService;
+   private CrudService noteService;
 
    @GetMapping("/")
    public ResponseEntity<List<Note>> getAll() {

@@ -23,20 +23,17 @@ public class SubjectService implements CrudService {
 
     @Override
     public List<Subject> getAll() {
-        // TODO Auto-generated method stub
         return subjectRepository.findAll();
     }
 
     @Override
     public Optional<Subject> getById(Long id) {
-        // TODO Auto-generated method stub
         return subjectRepository.findById(id);
     }
 
     @Override
     public Subject create(Object object) {
         SubjectDto subject = (SubjectDto) object;
-        // TODO Auto-generated method stub
         return subjectRepository.save(Subject
                 .builder()
                 .name(subject.getName())

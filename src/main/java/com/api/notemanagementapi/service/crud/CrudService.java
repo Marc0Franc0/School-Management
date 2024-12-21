@@ -12,9 +12,9 @@ import java.util.Optional;
 //Interface la cual es implementada en los service de cada entidad con los método crud básicos
 @Component
 public interface CrudService {
-    public List getAll();
-    public Optional getById(Long id);
-    public Object create(Object object);
-    public Optional updateById(Long id, Object object);
-    public void removeById (Long id);
+    List getAll();
+    Optional getById(Long id);
+    Object create(Object object);
+    Optional updateById(Long id, Object object);
+    void removeById (Long id);
 }

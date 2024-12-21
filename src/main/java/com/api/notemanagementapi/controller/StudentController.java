@@ -20,12 +20,11 @@ import com.api.notemanagementapi.service.StudentService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/students")
-@SecurityRequirement(name="Bearer Authentication")
+@RequestMapping("/api/v1/students")
 public class StudentController {
 
    @Autowired
-   StudentService studentService;
+   private StudentService studentService;
 
    @GetMapping("/")
    public ResponseEntity<List<Student>> getAll() {
