@@ -12,23 +12,22 @@ import com.api.notemanagementapi.model.Teacher;
 import com.api.notemanagementapi.repository.TeacherRepository;
 
 @Service
-public class TeacherService implements CrudService {
-    @Autowired
-    TeacherRepository teacherRepository;
+public class TeacherService  {
 
-    @Override
+    private final TeacherRepository teacherRepository;
+    @Autowired
+    public TeacherService(TeacherRepository teacherRepository){
+        this.teacherRepository=teacherRepository;
+    }
     public List<Teacher> getAll() {
         return teacherRepository.findAll();
     }
 
-    @Override
     public Optional<Teacher> getById(Long id) {
         return teacherRepository.findById(id);
     }
 
-    @Override
-    public Object create(Object object) {
-        TeacherDto teacher = (TeacherDto)object;
+    public Teacher create(TeacherDto teacher) {
         // TODO Auto-generated method stub
         return teacherRepository.save(Teacher
                 .builder()
@@ -39,9 +38,7 @@ public class TeacherService implements CrudService {
                 .build());
     }
 
-    @Override
-    public Optional updateById(Long id, Object object) {
-        TeacherDto teacher = (TeacherDto)object;
+    public Optional<Teacher> updateById(Long id, TeacherDto teacher) {
         // TODO Auto-generated method stub
         return teacherRepository.findById(id)
                 .map(tch -> {
@@ -53,11 +50,11 @@ public class TeacherService implements CrudService {
                             .email(teacher.getEmail())
                             .cell_phone(teacher.getCell_phone())
                             .build();
-                    return teacherRepository.save(tch);
+                    teacherRepository.save(tch);
+                    return tch;
                 });
     }
 
-    @Override
     public void removeById(Long id) {
         teacherRepository.deleteById(id);
     }

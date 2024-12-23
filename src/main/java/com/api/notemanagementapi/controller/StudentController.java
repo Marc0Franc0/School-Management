@@ -38,25 +38,6 @@ public class StudentController {
 
    }
 
-   @GetMapping("/{id}/notes")
-   public ResponseEntity<Optional<List<NoteDto>>> getNotesById(@PathVariable Long id) {
-      return ResponseEntity.status(HttpStatus.OK).body(studentService.getNotesById(id));
-   }
-   @GetMapping("/notes")
-   public ResponseEntity<Optional<List<NoteDto>>> getNotesByLastName(@RequestParam String lastName) {
-      return ResponseEntity.status(HttpStatus.OK).body(studentService.getNotesByLastname(lastName));
-   }
-
-   @GetMapping("/{id}/subjects")
-   public ResponseEntity<Optional<List<String>>> getSubjectsById(@PathVariable Long id) {
-      return ResponseEntity.status(HttpStatus.OK).body(studentService.getSubjectsById(id));
-   }
-   @GetMapping("/subjects")
-   public ResponseEntity<Optional<List<String>>> getSubjectsByLastName(@RequestParam String lastName) {
-      return ResponseEntity.status(HttpStatus.OK).body(studentService.getSubjectsByLastName(lastName));
-   }
-
-
    @PostMapping("/")
    public ResponseEntity<String> createStudent(@Valid @RequestBody StudentDto student, BindingResult bindingResult) {
       if (bindingResult.hasErrors()) {
@@ -82,10 +63,10 @@ public class StudentController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(bindingResult.getFieldError().getDefaultMessage());
          } else {
-            studentService.updateById(id, student);
+            Optional<Student> stu = studentService.updateById(id, student);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body("Student modified");
+                    .body("Student modified, ".concat(student.toString()));
          }
 
       } else {

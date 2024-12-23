@@ -11,6 +11,7 @@ import java.util.Optional;
 
 //Interface la cual es implementada en los service de cada entidad con los método crud básicos
 @Component
+@Deprecated
 public interface CrudService {
     List getAll();
     Optional getById(Long id);

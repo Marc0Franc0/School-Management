@@ -3,6 +3,7 @@ package com.api.notemanagementapi.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.api.notemanagementapi.service.TeacherService;
 import com.api.notemanagementapi.service.crud.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,8 +28,7 @@ import jakarta.validation.Valid;
 public class TeacherController {
 
    @Autowired
-   @Qualifier("TeacherService")
-   private CrudService teacherService;
+   private TeacherService teacherService;
 
    @GetMapping("/")
    public ResponseEntity<List<Teacher>> getAll() {
@@ -49,10 +49,10 @@ public class TeacherController {
                  .status(HttpStatus.BAD_REQUEST)
                  .body(bindingResult.getFieldError().getDefaultMessage());
       } else {
-         teacherService.create(teacher);
+         Teacher teacher1 =teacherService.create(teacher);
          return ResponseEntity
                  .status(HttpStatus.OK)
-                 .body("Teacher created");
+                 .body("Teacher created, ".concat(teacher1.toString()));
       }
    }
 
@@ -65,10 +65,10 @@ public class TeacherController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(bindingResult.getFieldError().getDefaultMessage());
          } else {
-            teacherService.updateById(id, teacher);
+            Optional<Teacher> teacher1 =teacherService.updateById(id,teacher);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body("Teacher modified");
+                    .body("Teacher modified, ".concat(teacher1.toString()));
          }
       } else {
          return ResponseEntity.status(HttpStatus.OK).body("Teacher not found");

@@ -33,7 +33,8 @@ public class Subject {
     private String description;
 
     //Profesor de la materia
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 

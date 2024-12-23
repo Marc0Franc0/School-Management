@@ -31,8 +31,8 @@ public class Student {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
-
-  @Column(unique = true)
+  @Column(unique = true,nullable = false)
+  private Integer dni;
   private String name;
 
   private String lastName;
@@ -60,7 +60,7 @@ public class Student {
   @JoinTable(name = "students_subjects", joinColumns = { @JoinColumn(name = "student_id") }, inverseJoinColumns = {
       @JoinColumn(name = "subject_id") })
   List<Subject> subjects = new ArrayList<>();
-
+  @JsonIgnore
   //Notas de los alumnos
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "student", cascade = CascadeType.ALL)
   private List<Note> notes;

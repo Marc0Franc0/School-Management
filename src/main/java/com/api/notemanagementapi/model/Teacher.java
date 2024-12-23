@@ -45,6 +45,6 @@ public class Teacher {
     
     private String cell_phone;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "teacher",cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "teacher")
     private List<Subject> subjects;
 }

@@ -9,7 +9,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class CrudServiceConfig {
-    @Bean(name="NoteService")
+
+/*
+   @Bean(name="NoteService")
     public NoteService getNoteService(){
         return new NoteService();
     }
@@ -21,5 +23,6 @@ public class CrudServiceConfig {
     public TeacherService getTeacherService(){
         return new TeacherService();
     }
+*/
 
 }

@@ -4,13 +4,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
 @Embeddable
 @NoArgsConstructor
 public class Person {
-
+    @NotNull(message = "Verificar DNI ingresado")
+    private Integer dni;
     @NotBlank(message = "Verificar nombre ingresado")
     private String name;
 

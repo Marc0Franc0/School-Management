@@ -3,20 +3,14 @@ package com.api.notemanagementapi.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.api.notemanagementapi.service.SubjectService;
 import com.api.notemanagementapi.service.crud.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.api.notemanagementapi.dto.SubjectDto;
 import com.api.notemanagementapi.model.Subject;
@@ -26,9 +20,8 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/subjects")
 public class SubjectController {
-    @Autowired
-    @Qualifier("SubjectService")
-    private CrudService subjectService;
+   @Autowired
+    private SubjectService subjectService;
 
     @GetMapping("/")
    public ResponseEntity<List<Subject>> getAll() {
@@ -48,10 +41,10 @@ public class SubjectController {
                .status(HttpStatus.BAD_REQUEST)
                .body(bindingResult.getFieldError().getDefaultMessage());
       } else {
-         subjectService.create(subject);
+         Subject subj=subjectService.create(subject);
          return ResponseEntity
                .status(HttpStatus.OK)
-               .body("Subject created");
+               .body("Subject created, ".concat(subj.toString()));
       }
    }
 
@@ -65,10 +58,10 @@ public class SubjectController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(bindingResult.getFieldError().getDefaultMessage());
          } else {
-            subjectService.updateById(id, subject);
+            Optional<Subject> subj=subjectService.updateById(id, subject);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body("Subject modified");
+                    .body("Subject modified, ".concat(subj.toString()));
          }
 
       } else {
@@ -87,4 +80,9 @@ public class SubjectController {
          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Subject not found");
       }
    }
+  @GetMapping("/students/{id}")
+   public ResponseEntity<Optional<List<SubjectDto>>> getSubjectsById(@PathVariable Long id) {
+      return ResponseEntity.status(HttpStatus.OK).body(subjectService.getSubjectsByStudentId(id));
+   }
+
 }

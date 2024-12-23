@@ -1,71 +1,93 @@
 package com.api.notemanagementapi.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import com.api.notemanagementapi.service.crud.CrudService;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.api.notemanagementapi.dto.NoteDto;
 import com.api.notemanagementapi.model.Note;
 import com.api.notemanagementapi.repository.NoteRepository;
-import com.api.notemanagementapi.repository.StudentRepository;
-import com.api.notemanagementapi.repository.SubjectRepository;
-
 @Service
-public class NoteService implements CrudService {
+public class NoteService {
+
+    private final NoteRepository noteRepository;
+
+    private final StudentService studentService;
+    private final SubjectService subjectService;
 
     @Autowired
-    NoteRepository noteRepository;
-
-    @Autowired
-    StudentRepository studentRepository;
-
-    @Autowired
-    SubjectRepository subjectRepository;
-
-    @Override
-    public List<Object> getAll() {
-        return Collections.singletonList(noteRepository.findAll());
+    public NoteService(NoteRepository noteRepository,
+                       @Lazy
+                       StudentService studentService,
+                       @Lazy
+                       SubjectService subjectService){
+        this.noteRepository=noteRepository;
+        this.studentService=studentService;
+        this.subjectService=subjectService;
     }
 
-    @Override
-    public Optional<Object> getById(Long id) {
-        return Optional.of(noteRepository.findById(id));
+    public List<Note> getAll() {
+        return noteRepository.findAll();
     }
 
-    @Override
-    public Object create(Object object) {
-        NoteDto note = (NoteDto)object;
+    public Optional<Note> getById(Long id) {
+        return noteRepository.findById(id);
+    }
+
+
+    public Note create(NoteDto note) {
         return noteRepository.save(Note
                 .builder()
                 .note(note.getNote())
-                .student(studentRepository.findById(note.getStudentId()).get())
-                .subject(subjectRepository.findById(note.getSubjectId()).get())
+                .student(studentService.getById(note.getStudentId()).get())
+                .subject(subjectService.getById(note.getSubjectId()).get())
+                //.student(studentRepository.findById(note.getStudentId()).get())
+                //.subject(subjectRepository.findById(note.getSubjectId()).get())
                 .build());
     }
 
-    @Override
-    public Optional<Object> updateById(Long id, Object object) {
-        NoteDto note = (NoteDto)object;
+    public Optional<Note> updateById(Long id, NoteDto note) {
         return noteRepository.findById(id)
                 .map(not -> {
                     not = Note
                             .builder()
                             .id(id)
                             .note(not.getNote())
-                            .student(studentRepository.findById(note.getStudentId()).get())
-                            .subject(subjectRepository.findById(note.getSubjectId()).get())
+                            .student(studentService.getById(note.getStudentId()).get())
+                            .subject(subjectService.getById(note.getSubjectId()).get())
+                            /*.student(studentRepository.findById(note.getStudentId()).get())
+                            .subject(subjectRepository.findById(note.getSubjectId()).get())*/
                             .build();
-                    return noteRepository.save(not);
+                            noteRepository.save(not);
+                    return not;
                 });
     }
 
-    @Override
     public void removeById(Long id) {
         noteRepository.deleteById(id);
     }
+    public Optional<List<NoteDto>> getNotesByStudentId(Long id) {
+        return studentService.getById(id).map(
+                stu -> stu.getNotes()
+                        .stream()
+                        .map(note -> new NoteDto
+                                (note.getNote(), note.getStudent().getId(), note.getSubject().getId())).collect(Collectors.toList()));
+    }
 
+     /*public Optional<List<NoteDto>> getNotesById(Long id) {
+        //Se retorna una lista de NoteDto ,el cual contiene tres datos -> note,studentLastName y SubjectName
+       return studentRepository.findById(id).map(stu->{
+       List<NoteDto> notes = stu.getNotes()
+               .stream()
+               .map(note->{
+                   return new NoteDto
+                           (note.getNote(),note.getStudent().getId(),note.getSubject().getId());
+       }).collect(Collectors.toList());
+       return notes;
+       });
+    }
+*/
 }
