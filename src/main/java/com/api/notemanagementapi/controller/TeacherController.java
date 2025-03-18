@@ -5,6 +5,10 @@ import java.util.Optional;
 
 import com.api.notemanagementapi.service.TeacherService;
 import com.api.notemanagementapi.service.crud.CrudService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -29,19 +33,34 @@ public class TeacherController {
 
    @Autowired
    private TeacherService teacherService;
-
+   @Operation(summary = "Get all teachers", responses = {
+           @ApiResponse(description = "Successful Operation", responseCode = "200",
+                   content = @Content(mediaType = "application/json",
+                           schema = @Schema(implementation = List.class))),
+           @ApiResponse(responseCode = "404", description = "Not found",
+                   content = @Content)})
    @GetMapping("/")
    public ResponseEntity<List<Teacher>> getAll() {
       return ResponseEntity.status(HttpStatus.OK).body(teacherService.getAll());
    }
-
+   @Operation(summary = "Get teacher by teacher ID", responses = {
+           @ApiResponse(description = "Successful Operation", responseCode = "200",
+                   content = @Content(mediaType = "application/json",
+                           schema = @Schema(implementation = Teacher.class))),
+           @ApiResponse(responseCode = "404", description = "Not found",
+                   content = @Content)})
    @GetMapping("/{id}")
    public ResponseEntity<Teacher> getTeacher(@PathVariable Long id) {
       Optional<Teacher> teacher = teacherService.getById(id);
       return ResponseEntity.status(HttpStatus.OK).body(teacher.get());
 
    }
-
+   @Operation(summary = "Create teacher", responses = {
+           @ApiResponse(description = "Successful Operation", responseCode = "200",
+                   content = @Content(mediaType = "application/json",
+                           schema = @Schema(implementation = String.class))),
+           @ApiResponse(responseCode = "404", description = "Not found",
+                   content = @Content)})
    @PostMapping("/")
    public ResponseEntity<String> createTeacher(@Valid @RequestBody TeacherDto teacher, BindingResult bindingResult) {
       if (bindingResult.hasErrors()) {
@@ -55,7 +74,12 @@ public class TeacherController {
                  .body("Teacher created, ".concat(teacher1.toString()));
       }
    }
-
+   @Operation(summary = "Update teacher by teacher ID", responses = {
+           @ApiResponse(description = "Successful Operation", responseCode = "200",
+                   content = @Content(mediaType = "application/json",
+                           schema = @Schema(implementation = String.class))),
+           @ApiResponse(responseCode = "404", description = "Not found",
+                   content = @Content)})
    @PutMapping("/{id}")
    public ResponseEntity<String> updateTeacher(@PathVariable Long id,@Valid  @RequestBody TeacherDto teacher
    ,BindingResult bindingResult) {
@@ -75,7 +99,12 @@ public class TeacherController {
       }
 
    }
-
+   @Operation(summary = "Remove teacher by teacher ID", responses = {
+           @ApiResponse(description = "Successful Operation", responseCode = "200",
+                   content = @Content(mediaType = "application/json",
+                           schema = @Schema(implementation = String.class))),
+           @ApiResponse(responseCode = "404", description = "Not found",
+                   content = @Content)})
    @DeleteMapping("/{id}")
    public ResponseEntity<String> removeTeacherById(@PathVariable Long id) {
       if (teacherService.getById(id).isPresent()) {
